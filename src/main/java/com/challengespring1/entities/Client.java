@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name="client")
+@Table(name = "client")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -32,21 +32,32 @@ public class Client {
     private String maritalStatus;
     private Date createdAt;
     private Date updatedAt;
-    @OneToMany(mappedBy = "client")
-    private List<Vehicle> vehicles=new ArrayList<>();;
+    @ManyToMany()
+    @JoinTable(name = "client_vehicle", joinColumns = {@JoinColumn(name = "client_id")}, inverseJoinColumns = {@JoinColumn(name = "vehicle_id")})
+    private List<Vehicle> vehicles = new ArrayList<>();
     @OneToOne
     private Insurance insurance;
     @OneToMany(mappedBy = "client")
-    private List<House> houses=new ArrayList<>();
+    private List<House> houses = new ArrayList<>();
 
 
-    public Client(ClientCreateDto clientCreateDto){
-        this.name=clientCreateDto.name();
-        this.age=clientCreateDto.age();
-        this.dependents=clientCreateDto.dependents();
-        this.income=clientCreateDto.income();
-        this.maritalStatus= clientCreateDto.marital_status();
-        this.createdAt= new Date();
-        this.updatedAt=new Date();
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.updatedAt = new Date();
+    }
+
+
+    public Client(ClientCreateDto clientCreateDto) {
+        this.name = clientCreateDto.name();
+        this.age = clientCreateDto.age();
+        this.dependents = clientCreateDto.dependents();
+        this.income = clientCreateDto.income();
+        this.maritalStatus = clientCreateDto.marital_status();
+
     }
 }

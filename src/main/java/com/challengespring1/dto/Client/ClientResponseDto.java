@@ -1,6 +1,8 @@
 package com.challengespring1.dto.Client;
 
 import com.challengespring1.dto.House.HouseResponseDto;
+import com.challengespring1.dto.Vehicle.VehicleResponseDto;
+import com.challengespring1.dto.Vehicle.VehicleUpdateDto;
 import com.challengespring1.entities.Client;
 import com.challengespring1.entities.House;
 import com.challengespring1.entities.Insurance;
@@ -30,7 +32,7 @@ public class ClientResponseDto {
     private String maritalStatus;
     private Date createdAt;
     private Date updatedAt;
-    private List<Vehicle> vehicles=new ArrayList<>();;
+    private List<VehicleResponseDto> vehicles=new ArrayList<>();;
     private Insurance insurance;
     private List<HouseResponseDto> houses=new ArrayList<>();
 
@@ -46,6 +48,7 @@ public class ClientResponseDto {
         this.updatedAt=client.getUpdatedAt();
         this.houses=getHouseResponsesDto(client.getHouses());
         this.insurance=client.getInsurance();
+        this.vehicles=getVehicleResponseDto(client.getVehicles());
     }
 
     private List<HouseResponseDto> getHouseResponsesDto(List<House> houses){
@@ -56,4 +59,11 @@ public class ClientResponseDto {
         return houseResponseDtos;
     }
 
+    private List<VehicleResponseDto> getVehicleResponseDto(List<Vehicle> vehicles){
+        List<VehicleResponseDto> vehicleResponseDtos=new ArrayList<>();
+        for(Vehicle vehicle:vehicles){
+            vehicleResponseDtos.add(new VehicleResponseDto(vehicle));
+        }
+        return vehicleResponseDtos;
+    }
 }
