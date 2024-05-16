@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,6 +61,7 @@ public class ClientService {
         client.setDependents(ValidateFields.validateUpdateFields(clientUpdateDto.dependents()) ? clientUpdateDto.dependents() : client.getDependents());
         client.setIncome(ValidateFields.validateUpdateFields(clientUpdateDto.income()) ? clientUpdateDto.income() : client.getIncome());
         client.setMaritalStatus(ValidateFields.validateUpdateFields(clientUpdateDto.marital_status()) ? clientUpdateDto.marital_status() : client.getMaritalStatus());
+        client.setUpdatedAt(new Date());
         clientRepository.save(client);
         return new ClientResponseDto(client);
     }

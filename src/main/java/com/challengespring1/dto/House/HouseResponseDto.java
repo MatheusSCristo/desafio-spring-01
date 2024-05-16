@@ -2,6 +2,7 @@ package com.challengespring1.dto.House;
 
 import com.challengespring1.entities.Client;
 import com.challengespring1.entities.House;
+import com.challengespring1.enums.OwnershipStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class HouseResponseDto {
     private Long id;
-    private String ownershipStatus;
+    private OwnershipStatus ownershipStatus;
     private String zipCode;
     private String location;
 

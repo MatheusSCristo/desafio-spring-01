@@ -6,6 +6,7 @@ import com.challengespring1.dto.House.HouseResponseDto;
 import com.challengespring1.dto.House.HouseUpdateDto;
 import com.challengespring1.entities.Client;
 import com.challengespring1.entities.House;
+import com.challengespring1.enums.OwnershipStatus;
 import com.challengespring1.repository.ClientRepository;
 import com.challengespring1.repository.HouseRepository;
 import com.challengespring1.utils.ValidateFields;
@@ -54,7 +55,7 @@ public class HouseService {
             if (optionalClient.isEmpty()) throw new RuntimeException("User not found");
             house.setClient(optionalClient.get());
         }
-        house.setOwnershipStatus(ValidateFields.validateUpdateFields(houseUpdateDto.ownershipStatus()) ? houseUpdateDto.ownershipStatus() : house.getOwnershipStatus());
+        house.setOwnershipStatus(ValidateFields.validateUpdateFields(houseUpdateDto.ownershipStatus()) ? OwnershipStatus.valueOf(houseUpdateDto.ownershipStatus()) : house.getOwnershipStatus());
         houseRepository.save(house);
         return new HouseResponseDto(house);
 
