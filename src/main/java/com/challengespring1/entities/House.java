@@ -19,4 +19,6 @@ public class House {
     @Column(name = "ownership_status")
     private String ownershipStatus;
     private String zipCode;
+    @ManyToOne(cascade=CascadeType.ALL)
+    private Client client;
 }
