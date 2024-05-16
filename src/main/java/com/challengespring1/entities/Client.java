@@ -45,7 +45,7 @@ public class Client {
         this.age=clientCreateDto.age();
         this.dependents=clientCreateDto.dependents();
         this.income=clientCreateDto.income();
-        this.maritalStatus= clientCreateDto.maritalStatus();
+        this.maritalStatus= clientCreateDto.marital_status();
         this.createdAt= new Date();
         this.updatedAt=new Date();
     }

@@ -1,5 +1,6 @@
 package com.challengespring1.entities;
 
+import com.challengespring1.dto.House.HouseCreateDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,4 +22,14 @@ public class House {
     private String zipCode;
     @ManyToOne(cascade=CascadeType.ALL)
     private Client client;
+    private String location;
+
+    public House(HouseCreateDto houseCreateDto,Client client){
+        this.ownershipStatus=houseCreateDto.ownershipStatus();
+        this.client=client;
+        this.zipCode=houseCreateDto.zipcode();
+        this.location=houseCreateDto.location();
+    }
+
 }
+
