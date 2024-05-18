@@ -1,7 +1,9 @@
 package com.challengespring1.controller;
 
 import com.challengespring1.dto.Insurance.InsuranceCreateDto;
+import com.challengespring1.dto.Insurance.InsuranceHomeCreateDto;
 import com.challengespring1.dto.Insurance.InsuranceResponseDto;
+import com.challengespring1.dto.Insurance.InsuranceVehicleCreateDto;
 import com.challengespring1.services.InsuranceService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,12 +31,12 @@ public class InsuranceController {
         return ResponseEntity.ok().body(insuranceService.disabilityInsurance(insuranceCreateDto));
     }
     @PostMapping("home")
-    public ResponseEntity<InsuranceResponseDto> getHomeInsurance(@RequestBody @Valid InsuranceCreateDto insuranceCreateDto){
-        return ResponseEntity.ok().body(insuranceService.homeInsurance(insuranceCreateDto));
+    public ResponseEntity<InsuranceResponseDto> getHomeInsurance(@RequestBody @Valid InsuranceHomeCreateDto insuranceHomeCreateDto){
+        return ResponseEntity.ok().body(insuranceService.homeInsurance(insuranceHomeCreateDto));
     }
     @PostMapping("vehicle")
-    public ResponseEntity<InsuranceResponseDto> getVehicleInsurance(@RequestBody @Valid InsuranceCreateDto insuranceCreateDto){
-        return ResponseEntity.ok().body(insuranceService.vehicleInsurance(insuranceCreateDto));
+    public ResponseEntity<InsuranceResponseDto> getVehicleInsurance(@RequestBody @Valid InsuranceVehicleCreateDto insuranceVehicleCreateDto){
+        return ResponseEntity.ok().body(insuranceService.vehicleInsurance(insuranceVehicleCreateDto));
     }
 
 }

@@ -1,7 +1,9 @@
 package com.challengespring1.services;
 
 import com.challengespring1.dto.Insurance.InsuranceCreateDto;
+import com.challengespring1.dto.Insurance.InsuranceHomeCreateDto;
 import com.challengespring1.dto.Insurance.InsuranceResponseDto;
+import com.challengespring1.dto.Insurance.InsuranceVehicleCreateDto;
 import com.challengespring1.entities.Client;
 import com.challengespring1.entities.House;
 import com.challengespring1.entities.Insurance;
@@ -13,9 +15,7 @@ import com.challengespring1.repository.ClientRepository;
 import com.challengespring1.repository.HouseRepository;
 import com.challengespring1.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -34,7 +34,7 @@ public class InsuranceService {
     private VehicleRepository vehicleRepository;
 
     public InsuranceResponseDto lifeInsurance(InsuranceCreateDto insuranceCreateDto) {
-        Client client = getClient(insuranceCreateDto);
+        Client client = getClient(insuranceCreateDto.client_id());
         Insurance insurance = new Insurance();
         isOld(client);
         int riskQuestionsRate = getBaseRiskQuestionsRate(insuranceCreateDto.risk_questions());
@@ -46,7 +46,7 @@ public class InsuranceService {
     }
 
     public InsuranceResponseDto disabilityInsurance(InsuranceCreateDto insuranceCreateDto) {
-        Client client = getClient(insuranceCreateDto);
+        Client client = getClient(insuranceCreateDto.client_id());
         Insurance insurance = new Insurance();
         isOld(client);
         if (client.getIncome().isNaN() || client.getIncome() == 0)
@@ -59,29 +59,29 @@ public class InsuranceService {
         return new InsuranceResponseDto(setInsuranceInfo(insurance, riskQuestionsRate, client, "disability"));
     }
 
-    public InsuranceResponseDto homeInsurance(InsuranceCreateDto insuranceCreateDto) {
-        Client client = getClient(insuranceCreateDto);
+    public InsuranceResponseDto homeInsurance(InsuranceHomeCreateDto insuranceHomeCreateDto) {
+        Client client = getClient(insuranceHomeCreateDto.client_id());
         Insurance insurance = new Insurance();
-        Optional<House> optionalHouse = houseRepository.findById(insuranceCreateDto.house_id());
+        Optional<House> optionalHouse = houseRepository.findById(insuranceHomeCreateDto.house_id());
         if (optionalHouse.isEmpty()) throw new RuntimeException("House not found");
         isOld(client);
         if (client.getHouses().isEmpty())
             throw new RuntimeException("Client is not fit for this insurance");
-        int riskQuestionsRate = getBaseRiskQuestionsRate(insuranceCreateDto.risk_questions());
+        int riskQuestionsRate = getBaseRiskQuestionsRate(insuranceHomeCreateDto.risk_questions());
         riskQuestionsRate = generalDiscounts(riskQuestionsRate, client);
         riskQuestionsRate += houseDiscount(optionalHouse.get());
         return new InsuranceResponseDto(setInsuranceInfo(insurance, riskQuestionsRate, client, "home"));
     }
 
-    public InsuranceResponseDto vehicleInsurance(InsuranceCreateDto insuranceCreateDto) {
-        Client client = getClient(insuranceCreateDto);
+    public InsuranceResponseDto vehicleInsurance(InsuranceVehicleCreateDto insuranceVehicleCreateDto) {
+        Client client = getClient(insuranceVehicleCreateDto.client_id());
         Insurance insurance = new Insurance();
-        Optional<Vehicle> optionalVehicle =vehicleRepository.findById(insuranceCreateDto.vehicle_id());
+        Optional<Vehicle> optionalVehicle =vehicleRepository.findById(insuranceVehicleCreateDto.vehicle_id());
         if (optionalVehicle.isEmpty()) throw new RuntimeException("House not found");
         isOld(client);
         if (client.getVehicles().isEmpty())
             throw new RuntimeException("Client is not fit for this insurance");
-        int riskQuestionsRate = getBaseRiskQuestionsRate(insuranceCreateDto.risk_questions());
+        int riskQuestionsRate = getBaseRiskQuestionsRate(insuranceVehicleCreateDto.risk_questions());
         riskQuestionsRate = generalDiscounts(riskQuestionsRate, client);
         riskQuestionsRate += vehicleDiscount(optionalVehicle.get());
         return new InsuranceResponseDto(setInsuranceInfo(insurance, riskQuestionsRate, client, "home"));
@@ -166,8 +166,8 @@ public class InsuranceService {
         else return Analyisis.responsible;
     }
 
-    private Client getClient(InsuranceCreateDto insuranceCreateDto) {
-        Optional<Client> optionalClient = clientRepository.findById(insuranceCreateDto.client_id());
+    private Client getClient(Long clientId) {
+        Optional<Client> optionalClient = clientRepository.findById(clientId);
         if (optionalClient.isEmpty()) throw new RuntimeException("Client not found");
         return optionalClient.get();
     }
