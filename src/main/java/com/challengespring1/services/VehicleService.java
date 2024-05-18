@@ -52,7 +52,6 @@ public class VehicleService {
         for (Client client : clients) {
             client.getVehicles().remove(vehicle);
         }
-        // Step 2: Save the clients to update the association
         clientRepository.saveAll(clients);
         vehicleRepository.deleteById(id);
         return new VehicleResponseDto(vehicle);

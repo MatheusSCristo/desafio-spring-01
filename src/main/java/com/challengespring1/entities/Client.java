@@ -1,6 +1,7 @@
 package com.challengespring1.entities;
 
 import com.challengespring1.dto.Client.ClientCreateDto;
+import com.challengespring1.enums.MaritalStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,17 +30,14 @@ public class Client {
     private Integer dependents;
     private Double income;
     @Column(name = "marital_status")
-    private String maritalStatus;
+    private MaritalStatus maritalStatus;
     private Date createdAt;
     private Date updatedAt;
     @ManyToMany()
     @JoinTable(name = "client_vehicle", joinColumns = {@JoinColumn(name = "client_id")}, inverseJoinColumns = {@JoinColumn(name = "vehicle_id")})
     private List<Vehicle> vehicles = new ArrayList<>();
-    @OneToOne
-    private Insurance insurance;
     @OneToMany(mappedBy = "client")
     private List<House> houses = new ArrayList<>();
-
 
     @PrePersist
     protected void onCreate() {

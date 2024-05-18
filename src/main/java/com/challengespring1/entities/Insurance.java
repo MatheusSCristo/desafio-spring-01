@@ -1,5 +1,6 @@
 package com.challengespring1.entities;
 
+import com.challengespring1.enums.Analyisis;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,8 +9,6 @@ import lombok.Setter;
 
 import java.util.Date;
 
-@Entity
-@Table(name = "insurance")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -21,11 +20,13 @@ public class Insurance {
     private Long id;
     private String type;
     private Integer risk;
-    private String analysis;
+    private Analyisis analysis;
     private String observation;
-    private Date createdAt;
-    private Date updatedAt;
+    private Date createdAt=new Date();
+    private Date updatedAt=new Date();
     @OneToOne
     private Client client;
+
+
 
 }

@@ -7,6 +7,7 @@ import com.challengespring1.entities.Client;
 import com.challengespring1.entities.House;
 import com.challengespring1.entities.Insurance;
 import com.challengespring1.entities.Vehicle;
+import com.challengespring1.enums.MaritalStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,11 +30,10 @@ public class ClientResponseDto {
     private Integer age;
     private Integer dependents;
     private Double income;
-    private String maritalStatus;
+    private MaritalStatus maritalStatus;
     private Date createdAt;
     private Date updatedAt;
     private List<VehicleResponseDto> vehicles=new ArrayList<>();;
-    private Insurance insurance;
     private List<HouseResponseDto> houses=new ArrayList<>();
 
 
@@ -47,7 +47,6 @@ public class ClientResponseDto {
         this.createdAt=client.getCreatedAt();
         this.updatedAt=client.getUpdatedAt();
         this.houses=getHouseResponsesDto(client.getHouses());
-        this.insurance=client.getInsurance();
         this.vehicles=getVehicleResponseDto(client.getVehicles());
     }
 
