@@ -11,6 +11,10 @@ import com.challengespring1.entities.Vehicle;
 import com.challengespring1.enums.Analyisis;
 import com.challengespring1.enums.MaritalStatus;
 import com.challengespring1.enums.OwnershipStatus;
+import com.challengespring1.infra.exceptions.ClientNotFitInsurance;
+import com.challengespring1.infra.exceptions.ClientNotFoundException;
+import com.challengespring1.infra.exceptions.HouseNotFoundException;
+import com.challengespring1.infra.exceptions.VehicleNotFoundException;
 import com.challengespring1.repository.ClientRepository;
 import com.challengespring1.repository.HouseRepository;
 import com.challengespring1.repository.VehicleRepository;
@@ -50,7 +54,7 @@ public class InsuranceService {
         Insurance insurance = new Insurance();
         isOld(client);
         if (client.getIncome().isNaN() || client.getIncome() == 0)
-            throw new RuntimeException("Client is not fit for this insurance");
+            throw new ClientNotFitInsurance();
         int riskQuestionsRate = getBaseRiskQuestionsRate(insuranceCreateDto.risk_questions());
         riskQuestionsRate = generalDiscounts(riskQuestionsRate, client);
         riskQuestionsRate += housesDiscount(client);
@@ -63,10 +67,10 @@ public class InsuranceService {
         Client client = getClient(insuranceHomeCreateDto.client_id());
         Insurance insurance = new Insurance();
         Optional<House> optionalHouse = houseRepository.findById(insuranceHomeCreateDto.house_id());
-        if (optionalHouse.isEmpty()) throw new RuntimeException("House not found");
+        if (optionalHouse.isEmpty()) throw new HouseNotFoundException();
         isOld(client);
         if (client.getHouses().isEmpty())
-            throw new RuntimeException("Client is not fit for this insurance");
+            throw new ClientNotFitInsurance();
         int riskQuestionsRate = getBaseRiskQuestionsRate(insuranceHomeCreateDto.risk_questions());
         riskQuestionsRate = generalDiscounts(riskQuestionsRate, client);
         riskQuestionsRate += houseDiscount(optionalHouse.get());
@@ -77,10 +81,10 @@ public class InsuranceService {
         Client client = getClient(insuranceVehicleCreateDto.client_id());
         Insurance insurance = new Insurance();
         Optional<Vehicle> optionalVehicle =vehicleRepository.findById(insuranceVehicleCreateDto.vehicle_id());
-        if (optionalVehicle.isEmpty()) throw new RuntimeException("House not found");
+        if (optionalVehicle.isEmpty()) throw new VehicleNotFoundException();
         isOld(client);
         if (client.getVehicles().isEmpty())
-            throw new RuntimeException("Client is not fit for this insurance");
+            throw new ClientNotFitInsurance();
         int riskQuestionsRate = getBaseRiskQuestionsRate(insuranceVehicleCreateDto.risk_questions());
         riskQuestionsRate = generalDiscounts(riskQuestionsRate, client);
         riskQuestionsRate += vehicleDiscount(optionalVehicle.get());
@@ -115,7 +119,7 @@ public class InsuranceService {
 
 
     private void isOld(Client client) {
-        if (client.getAge() > 60) throw new RuntimeException("Client is not fit for this insurance");
+        if (client.getAge() > 60) throw new ClientNotFitInsurance();
     }
 
     private Integer ageDiscount(Client client) {
@@ -168,7 +172,7 @@ public class InsuranceService {
 
     private Client getClient(Long clientId) {
         Optional<Client> optionalClient = clientRepository.findById(clientId);
-        if (optionalClient.isEmpty()) throw new RuntimeException("Client not found");
+        if (optionalClient.isEmpty()) throw new ClientNotFoundException();
         return optionalClient.get();
     }
 

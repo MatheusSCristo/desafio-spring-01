@@ -6,9 +6,11 @@ import com.challengespring1.dto.Client.ClientUpdateDto;
 import com.challengespring1.entities.Client;
 import com.challengespring1.entities.House;
 import com.challengespring1.entities.Vehicle;
+import com.challengespring1.infra.exceptions.ClientNotFoundException;
 import com.challengespring1.repository.ClientRepository;
 import com.challengespring1.repository.HouseRepository;
 import com.challengespring1.repository.VehicleRepository;
+import com.challengespring1.utils.CheckClient;
 import com.challengespring1.utils.ValidateFields;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,9 +34,9 @@ public class ClientService {
 
 
     public List<ClientResponseDto> getAllClients() {
-        List<Client> clients= clientRepository.findAll();
-        List<ClientResponseDto> clientResponseDtos=new ArrayList<>();
-        for(Client client:clients){
+        List<Client> clients = clientRepository.findAll();
+        List<ClientResponseDto> clientResponseDtos = new ArrayList<>();
+        for (Client client : clients) {
             clientResponseDtos.add(new ClientResponseDto(client));
         }
         return clientResponseDtos;
@@ -48,13 +50,13 @@ public class ClientService {
 
     public ClientResponseDto findClientById(Long id) {
         Optional<Client> optionalClient = clientRepository.findById(id);
-        if (optionalClient.isEmpty()) throw new RuntimeException("Usuário não encontrado");
+        CheckClient.clientExists(optionalClient);
         return new ClientResponseDto(optionalClient.get());
     }
 
     public ClientResponseDto updateClient(Long id, ClientUpdateDto clientUpdateDto) {
         Optional<Client> optionalClient = clientRepository.findById(id);
-        if (optionalClient.isEmpty()) throw new RuntimeException("Usuário não encontrado");
+        CheckClient.clientExists(optionalClient);
         Client client = optionalClient.get();
         client.setName(ValidateFields.validateUpdateFields(clientUpdateDto.name()) ? clientUpdateDto.name() : client.getName());
         client.setAge(ValidateFields.validateUpdateFields(clientUpdateDto.age()) ? clientUpdateDto.age() : client.getAge());
@@ -65,9 +67,10 @@ public class ClientService {
         clientRepository.save(client);
         return new ClientResponseDto(client);
     }
+
     public ClientResponseDto deleteClient(Long id) {
         Optional<Client> optionalClient = clientRepository.findById(id);
-        if (optionalClient.isEmpty()) throw new RuntimeException("Usuário não encontrado");
+        CheckClient.clientExists(optionalClient);
         Client client = optionalClient.get();
         for (House house : client.getHouses()) {
             houseRepository.deleteById(house.getId());
@@ -78,4 +81,6 @@ public class ClientService {
         clientRepository.deleteById(id);
         return new ClientResponseDto(client);
     }
+
+
 }

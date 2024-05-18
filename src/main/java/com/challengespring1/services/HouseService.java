@@ -9,6 +9,8 @@ import com.challengespring1.entities.House;
 import com.challengespring1.enums.OwnershipStatus;
 import com.challengespring1.repository.ClientRepository;
 import com.challengespring1.repository.HouseRepository;
+import com.challengespring1.utils.CheckClient;
+import com.challengespring1.utils.CheckHouse;
 import com.challengespring1.utils.ValidateFields;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,7 @@ public class HouseService {
 
     public HouseResponseDto createHouse(HouseCreateDto houseCreateDto) {
         Optional<Client> optionalClient = clientRepository.findById(houseCreateDto.clientId());
-        if (optionalClient.isEmpty()) throw new RuntimeException("User not found");
+        CheckClient.clientExists(optionalClient);
         House house = new House(houseCreateDto, optionalClient.get());
         houseRepository.save(house);
         return new HouseResponseDto(house);
@@ -48,11 +50,11 @@ public class HouseService {
 
     public HouseResponseDto updateHouse(Long id, HouseUpdateDto houseUpdateDto) {
         Optional<House> optionalHouse = houseRepository.findById(id);
-        if (optionalHouse.isEmpty()) throw new RuntimeException("House not found");
+        CheckHouse.HouseExists(optionalHouse);
         House house = optionalHouse.get();
         if (houseUpdateDto.clientId() != null) {
             Optional<Client> optionalClient = clientRepository.findById(houseUpdateDto.clientId());
-            if (optionalClient.isEmpty()) throw new RuntimeException("User not found");
+            CheckClient.clientExists(optionalClient);
             house.setClient(optionalClient.get());
         }
         house.setOwnershipStatus(ValidateFields.validateUpdateFields(houseUpdateDto.ownershipStatus()) ? OwnershipStatus.valueOf(houseUpdateDto.ownershipStatus()) : house.getOwnershipStatus());
@@ -64,7 +66,7 @@ public class HouseService {
     @Transactional
     public HouseResponseDto deleteHouse(Long id) {
         Optional<House> optionalHouse = houseRepository.findById(id);
-        if (optionalHouse.isEmpty()) throw new RuntimeException("House not found");
+        CheckHouse.HouseExists(optionalHouse);
         House house = optionalHouse.get();
         house.setClient(null);
         houseRepository.save(house);
